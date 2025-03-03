@@ -1,0 +1,196 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SYSTOOLS.ONLINE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Linear Beam';
+            src: url('https://3nkryptz.github.io/font-library/linearbeam.ttf') format('truetype');
+        }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0f14;
+            color: #8f9ba8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(#2b3e50 1px, transparent 1px);
+            background-size: 10px 10px;
+            position: relative;
+        }
+        .popup {
+            border: 1px solid #2b3e50;
+            padding: 20px;
+            background-color: #0a0f14;
+            text-align: center;
+            transform: scale(0);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+        }
+        .popup-header {
+            background-color: #2b3e50;
+            padding: 10px;
+            font-size: 1.25rem;
+            color: #8f9ba8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .button {
+            background-color: #2b3e50;
+            color: #8f9ba8;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #3c4f63;
+        }
+        .clock-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 1px solid #2b3e50;
+            padding: 10px;
+            background-color: #0a0f14;
+            text-align: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .show {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .hide {
+            transform: scale(0);
+            opacity: 0;
+        }
+        .typewriter-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #8f9ba8; }
+        }
+        .big-text {
+            font-family: 'Linear Beam', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-box" id="clock">
+        <!-- Clock will be inserted here by JavaScript -->
+    </div>
+    <div class="popup" id="splashscreen">
+        <div class="big-text typewriter-text" id="big-text">
+            <!-- Text will be inserted here by JavaScript -->
+        </div>
+    </div>
+    <div class="popup" id="initial-popup" style="display: none;">
+        <div class="popup-header">
+            MESSAGE FROM: SYSTEM
+        </div>
+        <div class="typewriter-text" id="initial-text">
+            <!-- Text will be inserted here by JavaScript -->
+        </div>
+        <div>
+            <button class="button" onclick="showRedirectPopup()">OK</button>
+        </div>
+    </div>
+    <div class="popup" id="redirect-popup" style="display: none;">
+        <div class="popup-header">
+            REDIRECT
+        </div>
+        <div class="typewriter-text" id="redirect-text">
+            <!-- Text will be inserted here by JavaScript -->
+        </div>
+    </div>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = time;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function showRedirectPopup() {
+            const initialPopup = document.getElementById('initial-popup');
+            const redirectPopup = document.getElementById('redirect-popup');
+            initialPopup.classList.add('hide');
+            setTimeout(() => {
+                initialPopup.style.display = 'none';
+                redirectPopup.style.display = 'block';
+                setTimeout(() => {
+                    redirectPopup.classList.add('show');
+                    typeWriter("You will be redirected in ", "redirect-text", 50, () => {
+                        document.getElementById('redirect-text').innerHTML += "<span id='countdown'>5</span> seconds";
+                        setTimeout(startCountdown, 500); // Start countdown after typewriter animation
+                    });
+                }, 10); // Small delay to ensure the display change is applied
+            }, 500);
+        }
+
+        function startCountdown() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                if (countdown === 0) {
+                    clearInterval(interval);
+                    window.location.href = 'https://google.com/';
+                }
+            }, 1000);
+        }
+
+        function typeWriter(text, elementId, delay = 100, callback) {
+            const element = document.getElementById(elementId);
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, delay);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+        window.onload = function() {
+            const splashscreen = document.getElementById('splashscreen');
+            splashscreen.classList.add('show');
+            typeWriter("3nkryptz", "big-text", 200);
+            setTimeout(() => {
+                splashscreen.classList.add('hide');
+                setTimeout(() => {
+                    splashscreen.style.display = 'none';
+                    const initialPopup = document.getElementById('initial-popup');
+                    initialPopup.style.display = 'block';
+                    setTimeout(() => {
+                        initialPopup.classList.add('show');
+                        typeWriter("This website is still in work. Come back later :)", "initial-text", 50);
+                    }, 10); // Small delay to ensure the display change is applied
+                }, 500);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
